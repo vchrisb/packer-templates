@@ -1,2 +1,3 @@
 # packer-templates
-Templates for Packer
+
+These are the Packer templates for boxes available at https://vagrantcloud.com/vchrisb
