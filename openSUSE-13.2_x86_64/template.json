@@ -1,22 +1,35 @@
 {
   "provisioners": [
     {
+	  "environment_vars": [],
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh '{{.Path}}'",
       "type": "shell",
       "scripts": [
-        "scripts/postinstall.sh",
-        "scripts/virtualbox.sh",
-        "scripts/zerodisk.sh"
-      ],
-      "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'"
+        "scripts/sshd.sh",
+        "scripts/vagrant.sh",
+        "scripts/vmtools.sh",
+        "scripts/sudoers.sh",
+        "scripts/zypper-locks.sh",
+        "scripts/cleanup.sh",
+        "scripts/minimize.sh"
+      ]
     }
   ],
+  "variables": 
+	{
+      "mirror": "http://download.opensuse.org/distribution",
+      "name": "openSUSE-13.2-x86_64",
+      "version": "0.1.4"
+	},
+	  
   "builders": [
     {
+	  "vm_name": "{{user `name`}}",
       "type": "virtualbox-iso",
       "boot_command": [
         "<esc><enter><wait>",
         "linux net.ifnames=0 netdevice=eth0 netsetup=dhcp<wait>",
-        " install=http://download.opensuse.org/distribution/13.2/repo/oss/ insecure=1<wait>",
+        " install={{user `mirror`}}/13.2/repo/oss/ insecure=1<wait>",
         " lang=en_US autoyast=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.xml<wait>",
         " textmode=1<wait>",
         "<enter><wait>"
@@ -27,12 +40,12 @@
       "http_directory": "http",
       "iso_checksum": "f2f0ecc6b1939d3725f22221baed237f",
       "iso_checksum_type": "md5",
-      "iso_url": "http://download.opensuse.org/distribution/13.2/iso/openSUSE-13.2-NET-x86_64.iso",
+      "iso_url": "{{user `mirror`}}/13.2/iso/openSUSE-13.2-NET-x86_64.iso",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
       "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/shutdown -P now' > shutdown.sh; echo 'vagrant'|sudo -S sh 'shutdown.sh'",
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
       "vboxmanage": [
@@ -50,12 +63,14 @@
         ]
       ]
     },
-    {
+	{
+	  "vm_name": "{{user `name`}}",
+      "vmdk_name": "{{user `name`}}-disk0",
       "type": "vmware-iso",
       "boot_command": [
         "<esc><enter><wait>",
         "linux net.ifnames=0 netdevice=eth0 netsetup=dhcp<wait>",
-        " install=http://download.opensuse.org/distribution/13.2/repo/oss/ insecure=1<wait>",
+        " install={{user `mirror`}}/13.2/repo/oss/ insecure=1<wait>",
         " lang=en_US autoyast=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.xml<wait>",
         " textmode=1<wait>",
         "<enter><wait>"
@@ -66,12 +81,13 @@
       "http_directory": "http",
       "iso_checksum": "f2f0ecc6b1939d3725f22221baed237f",
       "iso_checksum_type": "md5",
-      "iso_url": "http://download.opensuse.org/distribution/13.2/iso/openSUSE-13.1-NET-x86_64.iso",
-      "ssh_username": "root",
+      "iso_url": "{{user `mirror`}}/13.2/iso/openSUSE-13.2-NET-x86_64.iso",
+      "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
       "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/shutdown -P now' > shutdown.sh; echo 'vagrant'|sudo -S sh 'shutdown.sh'",
+      "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
+      "tools_upload_flavor": "linux",
       "vmx_data": {
         "memsize": "1024",
         "numvcpus": "2",
@@ -82,7 +98,13 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "openSUSE-13.2-x86_64-{{ .Provider }}.box"
-    }
+      "output": "vagrant_{{user `name`}}-{{ .Provider }}-{{user `version`}}.box"
+    },
+	{
+     "type": "vagrant-vmware-ovf",
+     "compression_level": 9,
+     "output": "vmware-ovf_{{user `name`}}-{{.Provider}}-{{user `version`}}.box",
+	 "only": ["vmware-iso"]
+   }
   ]
 }
