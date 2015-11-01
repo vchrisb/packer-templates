@@ -1,0 +1,2 @@
+..\packer\packer.exe build -only=vmware-iso .\template.json
+..\packer\packer.exe build -only=virtualbox-iso .\template.json

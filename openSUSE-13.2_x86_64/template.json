@@ -17,9 +17,9 @@
   ],
   "variables": 
 	{
-      "mirror": "http://download.opensuse.org/distribution",
+	  "mirror": "http://ftp.uni-erlangen.de/opensuse/distribution",
       "name": "openSUSE-13.2-x86_64",
-      "version": "0.1.4"
+      "version": "0.1.5"
 	},
 	  
   "builders": [
@@ -99,12 +99,6 @@
     {
       "type": "vagrant",
       "output": "vagrant_{{user `name`}}-{{ .Provider }}-{{user `version`}}.box"
-    },
-	{
-     "type": "vagrant-vmware-ovf",
-     "compression_level": 9,
-     "output": "vmware-ovf_{{user `name`}}-{{.Provider}}-{{user `version`}}.box",
-	 "only": ["vmware-iso"]
-   }
+    }
   ]
 }
