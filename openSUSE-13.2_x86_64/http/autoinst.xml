@@ -169,49 +169,32 @@
         </services>
     </runlevel>
 
-    <groups config:type="list">
-        <group>
-            <gid>100</gid>
-            <groupname>users</groupname>
-            <userlist/>
-        </group>
-    </groups>
+  <users config:type="list">
+    <user>
+      <username>root</username>
+      <home>/root</home>
+      <user_password>vagrant</user_password>
 
-    <user_defaults>
-        <expire/>
-        <group>100</group>
-        <groups/>
-        <home>/home</home>
-        <inactive>-1</inactive>
-        <no_groups config:type="boolean">true</no_groups>
-        <shell>/bin/bash</shell>
-        <skel>/etc/skel</skel>
-        <umask>022</umask>
-    </user_defaults>
+      <uid>0</uid>
+      <gid>0</gid>
+      <shell>/bin/bash</shell>
 
-    <users config:type="list">
-        <user>
-            <user_password>vagrant</user_password>
-            <username>root</username>
-        </user>
-        <user>
-            <fullname>vagrant</fullname>
-            <gid>100</gid>
-            <home>/home/vagrant</home>
-            <password_settings>
-                <expire/>
-                <flag/>
-                <inact>-1</inact>
-                <max>99999</max>
-                <min>0</min>
-                <warn>7</warn>
-            </password_settings>
-            <shell>/bin/bash</shell>
-            <uid>1000</uid>
-            <user_password>vagrant</user_password>
-            <username>vagrant</username>
-        </user>
-    </users>
+      <encrypted config:type="boolean">false</encrypted>
+    </user>
+
+    <user>
+      <username>vagrant</username>
+      <home>/home/vagrant</home>
+      <user_password>vagrant</user_password>
+
+      <uid>1000</uid>
+      <gid>100</gid>
+      <shell>/bin/bash</shell>
+
+      <encrypted config:type="boolean">false</encrypted>
+    </user>
+  </users>
+  
     <kdump>
         <add_crash_kernel config:type="boolean">false</add_crash_kernel>
     </kdump>
